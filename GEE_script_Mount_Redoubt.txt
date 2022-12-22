@@ -1,0 +1,118 @@
+// This GEE script (java-script) shows a search for ASTER images on Mount Redoubt
+// from 30th of April 2008 until 1st of June 2009 (covering March/April 2009 eruption).
+// With this (or similar) scripts, satellite images for well-documented volcanic
+// eruptions from around the world were investigated.
+// This includes the use of other satellites/sensors (e.g. Landsat, EO-1 ALI, Sentinel-2).
+
+// set up imageCollection of interest (ASTER in this case) and region of interest
+
+var imageCollection = ee.ImageCollection("ASTER/AST_L1T_003"),
+    geometry_Mt_Redoubt = 
+    /* color: #d63000 */
+    /* shown: false */
+    ee.Geometry.Polygon(
+        [[[-152.945262960632, 60.44766703698534],
+          [-152.89170461102262, 60.42666294908534],
+          [-152.86011891766324, 60.40971427866491],
+          [-152.81068044110074, 60.40428883862387],
+          [-152.75574880047574, 60.393435244451865],
+          [-152.71866994305387, 60.390042754037914],
+          [-152.69120412274137, 60.394792141646256],
+          [-152.6651115934445, 60.41039239506604],
+          [-152.6101799528195, 60.42598517183446],
+          [-152.5882072965695, 60.434117566390356],
+          [-152.57447438641324, 60.45037625316968],
+          [-152.54838185711637, 60.467980651447576],
+          [-152.54563527508512, 60.48557550691926],
+          [-152.54563527508512, 60.518709115391935],
+          [-152.57996755047574, 60.54032911320396],
+          [-152.61704640789762, 60.561934677566654],
+          [-152.65000539227262, 60.57205731917563],
+          [-152.70631032391324, 60.57543082872451],
+          [-152.758495382507, 60.5774547654353],
+          [-152.83677297039762, 60.5774547654353],
+          [-152.90543752117887, 60.57003304441891],
+          [-152.92466359539762, 60.555184488774856],
+          [-152.94663625164762, 60.5410045055312],
+          [-152.956249288757, 60.51938495886381],
+          [-152.96311574383512, 60.4909873892922]]]);
+
+// main script (image loading, enhancement, viewing and downloading)
+
+// access GEE function for batch download (see at end of script) developed by Rodrigo E. Principe
+var batch = require('users/fitoprincipe/geetools:batch');
+
+// specify start and end date of search
+var Start_date = new Date('2008-04-30')
+var End_date = new Date('2009-06-01')
+
+var geometry = geometry_Mt_Redoubt
+
+// zoom to ROI
+Map.centerObject(geometry)
+
+// access satellite images within specified start and end dates
+var dataset = ee.ImageCollection('ASTER/AST_L1T_003')
+                  .filterDate(Start_date,End_date)
+
+
+// only display images that are within the ROI (and contain the VNIR bands (ASTER specific))
+var Image_filtered = dataset.filterBounds(geometry)
+  .filter(ee.Filter.listContains('ORIGINAL_BANDS_PRESENT', 'B01'))
+  .filter(ee.Filter.listContains('ORIGINAL_BANDS_PRESENT', 'B02'))
+  .filter(ee.Filter.listContains('ORIGINAL_BANDS_PRESENT', 'B3N'))
+
+//// option to filter for Cloudcover  
+//var Image_filtered = Image_filtered
+//  .filterMetadata('CLOUDCOVER','less_than',90)
+
+// set band combinations and optional image visibility parameters
+var imageVisparams1 = {bands:['B3N','B02','B01']};
+var imageVisparams2 = {bands:['B3N','B02','B01'], min:0, max: 150};
+
+
+// produce list of available images and print
+var listOfImages = Image_filtered.toList(Image_filtered.size());
+print('List:',listOfImages);
+
+// Get the size of the image list (this is a server side ee.Number object)
+var len = listOfImages.size();
+
+//// For displaying multiple images,
+//// call '.evaluate()' on 'len' to convert it from server-side object to a
+//// client-side object available within the scope of the anonymous function as 'l'
+
+len.evaluate(function(l) {
+  for (var i=0; i < l; i++) {
+  var img = ee.Image(listOfImages.get(i));
+    Map.addLayer(img, imageVisparams1,i.toString() + ' colour_comp',false);
+    Map.addLayer(img, imageVisparams2,i.toString() + ' colour_comp_enhanced',false);
+
+// print each image within loop with its respective date for display in the Console
+    print('Img-'+i.toString());
+    print(img.date());
+  } 
+});
+
+// get best images from 'listOfImages' (manual selection)
+var best_image_1 = ee.Image(listOfImages.get(1));
+var best_image_2 = ee.Image(listOfImages.get(3));
+var best_image_3 = ee.Image(listOfImages.get(10));
+var best_image_4 = ee.Image(listOfImages.get(11));
+var best_image_5 = ee.Image(listOfImages.get(14));
+var best_image_6 = ee.Image(listOfImages.get(17));
+
+// create Image Collection of best images, convert to list and print
+var CollectionbestImages = ee.ImageCollection([best_image_1,best_image_2,best_image_3,best_image_4,best_image_5,best_image_6]);
+var listbestImages = CollectionbestImages.toList(CollectionbestImages.size());
+print('ListbestImages:',listbestImages);
+
+
+
+//// option to batch-download multiple images to Google Drive, specifying scale and region.
+//batch.Download.ImageCollection.toDrive(CollectionbestImages, 'Mount_Redoubt', 
+//                {scale: 10, 
+//                 region: geometry_Mt_Redoubt, 
+//                type: 'float'})
+
+
