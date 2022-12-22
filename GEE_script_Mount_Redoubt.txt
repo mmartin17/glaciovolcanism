@@ -1,8 +1,8 @@
 // This GEE (Google Earth Engine Code Editor) script (java-script programming language) 
-// shows a search for ASTER images on Mount Redoubt
+// presents a search for ASTER images on Mount Redoubt
 // from 30th of April 2008 until 1st of June 2009 (covering March/April 2009 eruption).
 // With this (or similar) scripts, satellite images for well-documented volcanic
-// eruptions from around the world were investigated.
+// eruptions from around the world were investigated in the thesis.
 // This includes the use of other satellites/sensors (e.g. Landsat, EO-1 ALI, Sentinel-2).
 
 // set up imageCollection of interest (ASTER in this case) and region of interest
