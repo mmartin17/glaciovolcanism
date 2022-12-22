@@ -7,7 +7,7 @@
 % Also, percentage velocity change is calculated 
 % (see equation 6.2 in thesis).
 % Both datasets are exported as geotiff to 'path_out'.
-% With this script, Fig. 6.17, Fig. 6.18, Figure 4 (Appendix) and 
+% With the help of this script, Fig. 6.17, Fig. 6.18, Figure 4 (Appendix) and 
 % Figure 5 (Appendix) were generated.
 
 %%
