@@ -1,5 +1,5 @@
 %% Velocity differences (anomalies) and percentage velocity change 
-% This script works on the georeferenced monthly velocity maps 
+% This Matlab script works on the georeferenced monthly velocity maps 
 % generated from GIV. 
 % Differences of a reference year (e.g. year with volcanic activity)
 % to year without volcanic activity are calculated 
