@@ -1,5 +1,5 @@
 %% Data validation script
-% This script calculates a histogram of differences of our surface velocity data to the
+% This Matlab script calculates a histogram of differences of our surface velocity data to the
 % surface velocities obtained by Millan et al. (2022).
 % Difference data were obtained in QGIS.
 % With this script, Fig. 6.12 of the thesis was generated.
