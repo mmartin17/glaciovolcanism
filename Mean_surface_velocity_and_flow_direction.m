@@ -1,5 +1,5 @@
 %% Mean velocity and flow direction
-% This script plots the mean velocity field and the flow vectors as
+% This Matlab script plots the mean velocity field and the flow vectors as
 % obtained from GIV.
 % With the help of this script, Fig. 6.8 of the thesis was generated.  
 %%
